@@ -67,6 +67,32 @@ exynos_data = [
 
         [ # Files to Send
         ]
+    ],
+
+    [
+        # SoC Name
+        "Exynos9610\0",
+
+        [  # S-Boot Split Values
+            ["part1.bin", 0x0000,  0x2000],
+            ["part2.bin", 0x2000,  0x15000],
+            ["part3.bin", 0x15000, 0x44000],
+            ["part1.bin", 0x0000,  0x2000],
+            ["part4.bin", 0x5A000, 0x5A000 + 0x180000],  # 0x5A000 to 0x1DA000
+            ["part5.bin", 0x1DA000, 0x1DA000 + 0x40000], # 0x1DA000 to 0x21A000
+            ["part6.bin", 0x21A000, 0x31B000]
+        ],
+
+        [  # Files to Extract (TAR)
+            "sboot.bin.lz4",
+        ],
+
+        [  # Files to Extract (LZ4)
+            "sboot.bin.lz4"
+        ],
+
+        [  # Files to Send
+        ]
     ]
 ]
 
@@ -135,6 +161,7 @@ def send_part_to_device(device, file, filename):
     ret = device.write(2, file, timeout=50000)
     if ret == file_size:
         logger.info(f"=> {ret} bytes written.")
+        sleep(1)
     else:
         logger.critical(f"=> {ret} bytes written.")
         logger.critical(f"Failed to write {file_size} bytes")
